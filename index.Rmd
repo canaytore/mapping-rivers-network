@@ -6,14 +6,168 @@ favicon: "favicon.jpg"
 site: bookdown::bookdown_site
 ---
 
-# Introduction
+# Get started..
 
-## Aim
+Inspired by [Dominic Royé](https://dominicroye.github.io/en/graphs/geography/)'s maps..
 
-## Motivation
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(ggtext)
+library(sf)
+library(rnaturalearth)
+```
+
+```{r message=FALSE, warning=FALSE}
+countries_eu <- st_as_sf(ne_countries()) %>%
+  filter(continent == "Europe") %>%
+  select(sovereignt) %>%
+  .[[1]]
+```
+
+```{r, cache = TRUE}
+sf_eu <- list()
+for (i in countries_eu) {
+  sf_eu[[i]] <- ne_countries(country = i, scale = 'medium',
+                       type = 'map_units', returnclass = 'sf')
+}
+shape_eu <- read_sf("data/HydroRIVERS_v10_eu.shp") 
+```
+
+```{r message=FALSE, warning=FALSE}
+for (i in 1:length(countries_eu)) {
+  shape_eu %>% 
+    st_intersection(sf_eu[[i]]) %>%
+    ggplot(.) +
+    geom_sf(color = "#002266") +
+    labs(
+      title = paste0("Rivers network in ", countries_eu[i]),
+      #subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator).",
+      caption = "Made by Can Aytöre &middot; Data from HydroSHEDS"
+      ) +
+    theme_void() +
+    theme(
+      plot.background = element_rect(fill = "white", color = "white"),
+      panel.background = element_rect(fill = "white", color = "white"),
+      plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
+      plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
+      plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+    )
+}
+```
 
 
-# Getting Started with ...
+
+
+
+
+```{r}
+  shape_eu %>% 
+    st_intersection(sf_eu[1]) %>%
+    ggplot(.) +
+    geom_sf(color = "#002266") +
+    labs(
+      title = paste0("Rivers network in ", countries_eu[i]),
+      #subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator).",
+      caption = "Made by Can Aytöre &middot; Data from HydroSHEDS"
+      ) +
+    theme_void() +
+    theme(
+      plot.background = element_rect(fill = "white", color = "white"),
+      panel.background = element_rect(fill = "white", color = "white"),
+      plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
+      plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
+      plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+    )
+```
+
+```{r}
+albania <- ne_countries(country = "Albania", scale = 'medium',
+                       type = 'map_units', returnclass = 'sf')
+
+  shape_eu %>% 
+    st_intersection(albania) %>%
+    ggplot(.) +
+    geom_sf(color = "#002266") +
+    labs(
+      title = paste0("Rivers network in ", countries_eu[i]),
+      #subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator).",
+      caption = "Made by Can Aytöre &middot; Data from HydroSHEDS"
+      ) +
+    theme_void() +
+    theme(
+      plot.background = element_rect(fill = "white", color = "white"),
+      panel.background = element_rect(fill = "white", color = "white"),
+      plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
+      plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
+      plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+    )
+```
+
+
+
+```{r}
+x <- ggplot() +
+  geom_sf(
+    data = rivers_30sec, 
+    color = "#002266"
+  ) +
+  labs(
+    title = "Rivers network in France",
+    subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator).",
+    caption = "Made by Etienne Bacher &middot; Data from HydroSHEDS"
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", color = "white"),
+    panel.background = element_rect(fill = "white", color = "white"),
+    plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
+    plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
+    plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+  )
+x
+#ggsave("france_30sec.png", plot = x, width = 8, height = 8)
+```
+
+![](france_30sec.png)
+
+This plot shows the density of rivers in France. Now, if we want to show which rivers are the most important, we can modify the opacity of the lines depending on their flow:
+
+```{r}
+x <- ggplot() +
+  geom_sf(
+    data = rivers_30sec, 
+    mapping = aes(alpha = UP_CELLS),
+    color = "#002266"
+  ) +
+  labs(
+    title = "Rivers network in France",
+    subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator). Line opacity<br> represents the size of the flow.",
+    caption = "Made by Etienne Bacher &middot; Data from HydroSHEDS"
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", color = "white"),
+    panel.background = element_rect(fill = "white", color = "white"),
+    plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
+    plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
+    legend.position = "none",
+    plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30)),
+    text = element_text(family = "Roboto Condensed")
+  )
+ggsave("france_30sec_opac.png", plot = x, height = 8, width = 8)
+```
+
+![](france_30sec_opac.png)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Get started
+
+```{r}
+
+```
+
 
 
 
