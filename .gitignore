@@ -3,3 +3,10 @@
 .Rproj.user
 .Ruserdata
 *.Rproj
+
+*.dbf
+*.prj
+*.sbn
+*.sbx
+*.shp
+*.shx
