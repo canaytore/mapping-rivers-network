@@ -42,19 +42,17 @@ for (i in 1:length(countries_eu)) {
   plot_eu <- shape_eu %>% 
     st_intersection(sf_eu[[i]]) %>%
     ggplot(.) +
-    geom_sf(color = "#002266") +
+    geom_sf(color = "deepskyblue3") +
     labs(
       title = paste0("Rivers network in ", countries_eu[i]),
-      #subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator).",
       caption = "Made by Can Aytöre &middot; Data from HydroSHEDS"
       ) +
     theme_void() +
     theme(
       plot.background = element_rect(fill = "white", color = "white"),
       panel.background = element_rect(fill = "white", color = "white"),
-      plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
-      plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
-      plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+      plot.title = element_markdown(family = "Serif", size = 25),
+      plot.caption = element_markdown(family = "Serif")
     )
   ggsave(file.path(paste0(countries_eu[i],".png")), plot = plot_eu, path = "docs", dpi = 300, width = 8, height = 8)
 }
@@ -69,26 +67,26 @@ for (i in 1:length(countries_eu)) {
   plot_eu <- shape_eu %>% 
     st_intersection(sf_eu[[i]]) %>%
     ggplot(.) +
-    geom_sf(mapping = aes(alpha = DIS_AV_CMS), color = "#002266") +
+    geom_sf(mapping = aes(alpha = DIS_AV_CMS), color = "deepskyblue4") +
     labs(
-      title = paste0("Rivers network in ", countries_eu[i]),
-      #subtitle = "This map displays 18,099 rivers. These are<br> measured at a grid resolution of 30 arc-seconds<br> (approx. 1km at the equator). Line opacity<br> represents the size of the flow.",
+      title = paste0("Rivers network in ", countries_eu[i], " by Flow Size"),
       caption = "Made by Can Aytöre &middot; Data from HydroSHEDS"
       ) +
     theme_void() +
     theme(
       plot.background = element_rect(fill = "white", color = "white"),
       panel.background = element_rect(fill = "white", color = "white"),
-      plot.title = element_markdown(hjust = 0.5, size = 30, margin = margin(t = 10, b = -20)),
-      plot.subtitle = element_markdown(margin = margin(t = 40, b = -60, l = 10), size = 12),
-      legend.position = "none",
-      plot.caption = element_markdown(hjust = 0.5, margin = margin(l = 10, b = 20, t = -30))
+      plot.title = element_markdown(family = "Serif", size = 25),
+      plot.caption = element_markdown(family = "Serif"),
+      legend.position = "none"
     )
   ggsave(file.path(paste0(countries_eu[i],"_by_discharge.png")), plot = plot_eu, path = "docs", dpi = 300, width = 8, height = 8)
 }
 ```
 
 ![](France_by_discharge.png)
+
+
 
 ## Get started
 
