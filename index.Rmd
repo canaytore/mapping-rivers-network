@@ -63,7 +63,7 @@ for (i in 1:length(countries_eu)) {
 This plot shows the density of rivers in France. Now, if we want to show which rivers are the most important, we can modify the opacity of the lines depending on their flow:
 
 ```{r message=FALSE, warning=FALSE}
-for (i in 1:length(countries_eu)) {
+for (i in 35:length(countries_eu)) {
   plot_eu <- shape_eu %>% 
     st_intersection(sf_eu[[i]]) %>%
     ggplot(.) +
